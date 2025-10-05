@@ -14,10 +14,6 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Servidor Express con TypeScript funcionando 🚀');
 });
 
-app.listen(PORT, () => {
-  console.log(`Servidor escuchando en http://localhost:${PORT}`);
-});
-
 app.use('/api/trips', tripRouter);
 
 const startServer = async () => {
