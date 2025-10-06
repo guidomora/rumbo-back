@@ -183,6 +183,23 @@ export class TripController {
       });
     }
   };
+
+    getPublishedTrips = async (_req: Request, res: Response): Promise<Response> => {
+    try {
+      const trips = await this.tripService.getPublishedTrips();
+
+      return res.status(200).json({
+        message: 'Viajes publicados obtenidos correctamente.',
+        data: trips,
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Error inesperado al obtener los viajes.';
+
+      return res.status(500).json({
+        message,
+      });
+    }
+  };
 }
 
 export const tripController = new TripController();

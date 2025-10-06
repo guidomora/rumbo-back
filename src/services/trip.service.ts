@@ -45,4 +45,15 @@ export class TripService {
 
     return repository.save(trip);
   }
+
+    async getPublishedTrips(): Promise<Trip[]> {
+    const repository = this.repository;
+
+    return repository.find({
+      order: {
+        date: 'ASC',
+        time: 'ASC',
+      },
+    });
+  }
 }
