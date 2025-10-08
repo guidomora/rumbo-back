@@ -86,6 +86,15 @@ Esta guía describe los endpoints disponibles en el servidor Express. Todas las 
 - **Método**: `POST`
 - **Ruta**: `http://localhost:3000/api/trips/api/trips/:id/select`
 - **Parámetros**: id | Tipo String UUID que se obtiene de la DB de un viaje ya existente
+- **Request Body**: 
+
+```json
+{
+    "userId": "5f47ac10-b58d-4373-a567-0e02b2c3d479",
+    "seats": 1
+}
+```
+
 - **Respuesta exitosa** (`201 Created`):
 
 ```json
