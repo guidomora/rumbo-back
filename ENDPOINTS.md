@@ -49,7 +49,69 @@ Esta guía describe los endpoints disponibles en el servidor Express. Todas las 
     "data": [ /* Lista de viajes */ ]
   }
   ```
+
 - **Errores comunes** (`500 Internal Server Error`): Problemas al recuperar la información desde la base de datos.
+
+### Seleccionar viaje por id
+
+- **Método**: `GET`
+- **Ruta**: `http://localhost:3000/api/trips/api/trips/:id`
+- **Parámetros**: id | Tipo String UUID que se obtiene de la DB de un viaje ya existente
+- **Respuesta exitosa** (`200 OK`):
+
+```json
+{
+  "id": "2f3381ef-5b60-45fd-8795-caae4533acb0",
+  "driverId": "a5b3e5f2-7a21-4cf7-91b9-9a3c9f245d31",
+  "createdByUserId": "c9d2a1b5-1234-4af7-b67f-f8b9e31a6e2a",
+  "origin": "Buenos Aires",
+  "destination": "Mar del Plata",
+  "date": "2025-11-15",
+  "time": "08:30:00",
+  "availableSeats": 1,
+  "pricePerPerson": "12000.00",
+  "vehicle": "Toyota Corolla 2020",
+  "music": true,
+  "pets": false,
+  "children": true,
+  "luggage": true,
+  "notes": "Salida puntual, se permite un bolso pequeño por persona.",
+  "createdAt": "2025-10-08T01:26:59.174Z",
+  "updatedAt": "2025-10-08T01:41:01.636Z"
+}
+```
+
+### Reservar viaje por id
+
+- **Método**: `POST`
+- **Ruta**: `http://localhost:3000/api/trips/api/trips/:id/select`
+- **Parámetros**: id | Tipo String UUID que se obtiene de la DB de un viaje ya existente
+- **Respuesta exitosa** (`201 Created`):
+
+```json
+{
+  "message": "Viaje reservado correctamente.",
+  "data": {
+    "id": "2f3381ef-5b60-45fd-8795-caae4533acb0",
+    "driverId": "a5b3e5f2-7a21-4cf7-91b9-9a3c9f245d31",
+    "createdByUserId": "c9d2a1b5-1234-4af7-b67f-f8b9e31a6e2a",
+    "origin": "Buenos Aires",
+    "destination": "Mar del Plata",
+    "date": "2025-11-15",
+    "time": "08:30:00",
+    "availableSeats": 5,
+    "pricePerPerson": "12000.00",
+    "vehicle": "Toyota Corolla 2020",
+    "music": true,
+    "pets": false,
+    "children": true,
+    "luggage": true,
+    "notes": "Salida puntual, se permite un bolso pequeño por persona.",
+    "createdAt": "2025-10-08T01:26:59.174Z",
+    "updatedAt": "2025-10-08T02:28:43.205Z"
+  }
+}
+```
 
 ## 🏠 Salud del servidor (`/`)
 

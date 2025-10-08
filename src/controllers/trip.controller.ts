@@ -224,12 +224,12 @@ export class TripController {
         seats: seatsNumber,
       });
 
-      return res.status(200).json({
-        message: 'Viaje seleccionado correctamente.',
+      return res.status(201).json({
+        message: 'Viaje reservado correctamente.',
         data: selectedTrip,
       });
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Error inesperado al seleccionar el viaje.';
+      const message = error instanceof Error ? error.message : 'Error inesperado al reservar el viaje.';
       return res.status(400).json({ message });
     }
   };

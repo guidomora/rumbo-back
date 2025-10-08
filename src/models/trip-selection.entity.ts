@@ -13,8 +13,8 @@ export class TripSelection {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @ManyToOne(() => Trip)
-    @JoinColumn({ name: 'trip_id' })
+    @ManyToOne(() => Trip, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'tripId' })
     trip!: Trip;
 
     @Column({ type: 'uuid' })
