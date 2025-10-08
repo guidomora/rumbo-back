@@ -14,5 +14,8 @@ build/
 # Lock file
 package-lock.json
 
+# Configuración del IDE (WebStorm, IntelliJ, etc.)
+.idea/
+
 # Sistema
 .DS_Store
