@@ -200,6 +200,60 @@ export class TripController {
       });
     }
   };
+
+  selectTrip = async(req: Request, res: Response): Promise<Response> => {
+    const { tripId } = req.params;
+    const { userId, seats = 1 } = req.body;
+
+    try {
+      if (!tripId) {
+        throw new Error('El parámetro tripId es requerido.');
+      }
+      if (!userId) {
+        throw new Error('El campo userId es requerido.');
+      }
+
+      const seatsNumber = this.parseNumber(seats, 'seats');
+      if (seatsNumber <= 0) {
+        throw new Error('El número de asientos debe ser mayor a 0.');
+      }
+
+      const selectedTrip = await this.tripService.selectTrip({
+        tripId,
+        userId,
+        seats: seatsNumber,
+      });
+
+      return res.status(200).json({
+        message: 'Viaje seleccionado correctamente.',
+        data: selectedTrip,
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Error inesperado al seleccionar el viaje.';
+      return res.status(400).json({ message });
+    }
+  };
+
+  getTripById = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const { tripId } = req.params;
+
+      if (!tripId) {
+        return res.status(400).json({ message: 'Falta el parámetro tripId' });
+      }
+
+      const trip = await this.tripService.getTripById(tripId);
+
+      if (!tripId) {
+        return res.status(404).json({ message: 'Viaje no encontrado' });
+      }
+
+      return res.status(200).json(trip);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Error inesperado al obtener el viaje.';
+      return res.status(500).json({ message });
+    }
+  };
 }
 
 export const tripController = new TripController();
