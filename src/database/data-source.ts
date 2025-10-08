@@ -2,6 +2,7 @@ import 'dotenv/config';
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import { Trip } from '../models/trip.entity';
+import { TripSelection } from "../models/trip-selection.entity";
 
 const {
   DB_HOST = 'localhost',
@@ -24,7 +25,7 @@ export const AppDataSource = new DataSource({
   database: DB_NAME,
   synchronize: DB_SYNCHRONIZE === 'true',
   logging: DB_LOGGING === 'true',
-  entities: [Trip],
+  entities: [Trip, TripSelection],
 });
 
 export const initializeDataSource = async (): Promise<DataSource> => {

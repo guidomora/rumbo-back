@@ -1,5 +1,21 @@
+# Archivos de entorno
 .env
-/dist
-/node_modules
-/build
+
+
 postgres/
+
+# Dependencias
+node_modules/
+
+# Compilados
+dist/
+build/
+
+# Lock file
+package-lock.json
+
+# Configuración del IDE (WebStorm, IntelliJ, etc.)
+.idea/
+
+# Sistema
+.DS_Store
