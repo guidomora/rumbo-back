@@ -4,6 +4,38 @@ Esta guía describe los endpoints disponibles en el servidor Express. Todas las 
 
 - **URL base**: `http://localhost:3000`
 
+## 📝 Usuarios (`/api/users`)
+
+### Crear un usuario
+- **Método**: `POST`
+- **Ruta**: `http://localhost:3000/api/users`
+- **Tipo de cuerpo**: `application/json`
+- **Cuerpo requerido**:
+
+  | Campo              | Tipo      | Obligatorio | Descripción |
+  |--------------------|-----------|-------------|-------------|
+  | `name`             | `string`  | Sí          | Nombre del usuario. |
+  | `email`            | `string`  | Sí          | Correo electrónico del usuario. |
+  | `phone`            | `string`  | Sí          | Número de teléfono del usuario. |
+  | `password`         | `string`  | Sí          | Contraseña del usuario. |
+  | `dni`              | `string`  | Sí          | Número de documento del usuario. |
+
+- **Respuesta exitosa** (`201 Created`):
+  ```json
+  {
+    "message": "Usuario creado correctamente.",
+    "data": {
+      "id": "string",
+      "name": "string",
+      "email": "string",
+      "phone": "string",
+      "password": "string",
+      "dni": "string"
+    }
+  }
+  ```
+- **Errores comunes** (`400 Bad Request`): Campos faltantes o formatos inválidos en la solicitud.
+
 ## 🚗 Viajes (`/api/trips`)
 
 ### Crear un viaje
