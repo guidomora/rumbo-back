@@ -1,9 +1,12 @@
 import { Request, Response } from 'express';
 import { UserService, UserServiceError } from '../services/ser.service';
-
-const REQUIRED_FIELDS: Array<keyof UserRequestBody> = ['name', 'email', 'phone', 'password', 'dni'];
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const PHONE_REGEX = /^[+\d][\d\s-]{6,}$/;
+import {
+  ensureRequiredFields,
+  parseString,
+  validateEmail,
+  validatePassword,
+  validatePhone,
+} from '../utils/validation';
 
 type UserRequestBody = {
   name?: unknown;
@@ -13,60 +16,22 @@ type UserRequestBody = {
   dni?: unknown;
 };
 
+const REQUIRED_FIELDS: Array<keyof UserRequestBody> = ['name', 'email', 'phone', 'password', 'dni'];
+
 export class UserController {
   constructor(private readonly userService = new UserService()) {}
-
-  private ensureRequiredFields(body: UserRequestBody): void {
-    const missing = REQUIRED_FIELDS.filter((field) => body[field] === undefined || body[field] === null);
-
-    if (missing.length > 0) {
-      throw new Error(`Faltan los siguientes campos requeridos: ${missing.join(', ')}`);
-    }
-  }
-
-  private parseString(value: unknown, field: keyof UserRequestBody): string {
-    if (typeof value === 'string' && value.trim().length > 0) {
-      return value.trim();
-    }
-
-    throw new Error(`El campo ${field} es requerido.`);
-  }
-
-  private validateEmail(email: string): string {
-    if (!EMAIL_REGEX.test(email)) {
-      throw new Error('El formato del email es inválido.');
-    }
-
-    return email.toLowerCase();
-  }
-
-  private validatePhone(phone: string): string {
-    if (!PHONE_REGEX.test(phone)) {
-      throw new Error('El formato del teléfono es inválido.');
-    }
-
-    return phone;
-  }
-
-  private validatePassword(password: string): string {
-    if (password.length < 8) {
-      throw new Error('La contraseña debe tener al menos 8 caracteres.');
-    }
-
-    return password;
-  }
 
   createUser = async (req: Request, res: Response): Promise<Response> => {
     const body = req.body as UserRequestBody;
 
     try {
-      this.ensureRequiredFields(body);
+      ensureRequiredFields(body, REQUIRED_FIELDS);
 
-      const name = this.parseString(body.name, 'name');
-      const email = this.validateEmail(this.parseString(body.email, 'email'));
-      const phone = this.validatePhone(this.parseString(body.phone, 'phone'));
-      const password = this.validatePassword(this.parseString(body.password, 'password'));
-      const dni = this.parseString(body.dni, 'dni');
+      const name = parseString(body.name, 'name');
+      const email = validateEmail(parseString(body.email, 'email'));
+      const phone = validatePhone(parseString(body.phone, 'phone'));
+      const password = validatePassword(parseString(body.password, 'password'));
+      const dni = parseString(body.dni, 'dni');
 
       const user = await this.userService.createUser({
         name,
