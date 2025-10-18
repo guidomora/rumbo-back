@@ -36,6 +36,33 @@ Esta guía describe los endpoints disponibles en el servidor Express. Todas las 
   ```
 - **Errores comunes** (`400 Bad Request`): Campos faltantes o formatos inválidos en la solicitud.
 
+### Iniciar sesión
+- **Método**: `POST`
+- **Ruta**: `http://localhost:3000/api/users/login`
+- **Tipo de cuerpo**: `application/json`
+- **Cuerpo requerido**:
+
+  | Campo      | Tipo     | Obligatorio | Descripción |
+  |------------|----------|-------------|-------------|
+  | `email`    | `string` | Sí          | Correo electrónico registrado del usuario. |
+  | `password` | `string` | Sí          | Contraseña del usuario. |
+
+- **Respuesta exitosa** (`200 OK`):
+  ```json
+  {
+    "user": {
+      "id": "string",
+      "name": "string",
+      "email": "string",
+      "phone": "string",
+      "dni": "string",
+      "createdAt": "datetime",
+      "updatedAt": "datetime"
+    }
+  }
+  ```
+- **Errores comunes** (`401 Unauthorized`): Credenciales inválidas.
+
 ## 🚗 Viajes (`/api/trips`)
 
 ### Crear un viaje

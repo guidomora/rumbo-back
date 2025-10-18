@@ -18,6 +18,13 @@ type UserRequestBody = {
 
 const REQUIRED_FIELDS: Array<keyof UserRequestBody> = ['name', 'email', 'phone', 'password', 'dni'];
 
+type LoginRequestBody = {
+  email?: unknown;
+  password?: unknown;
+};
+
+const LOGIN_REQUIRED_FIELDS: Array<keyof LoginRequestBody> = ['email', 'password'];
+
 export class UserController {
   constructor(private readonly userService = new UserService()) {}
 
@@ -44,6 +51,32 @@ export class UserController {
       const { password: _password, ...userWithoutPassword } = user;
 
       return res.status(201).json({ user: userWithoutPassword });
+    } catch (error: unknown) {
+      if (error instanceof UserServiceError) {
+        return res.status(error.statusCode).json({ message: error.message });
+      }
+
+      if (error instanceof Error) {
+        return res.status(400).json({ message: error.message });
+      }
+
+      return res.status(500).json({ message: 'Ocurrió un error inesperado.' });
+    }
+  };
+
+  loginUser = async (req: Request, res: Response): Promise<Response> => {
+    const body = req.body as LoginRequestBody;
+
+    try {
+      ensureRequiredFields(body, LOGIN_REQUIRED_FIELDS);
+
+      const email = validateEmail(parseString(body.email, 'email'));
+      const password = parseString(body.password, 'password');
+
+      const user = await this.userService.login(email, password);
+      const { password: _password, ...userWithoutPassword } = user;
+
+      return res.status(200).json({ user: userWithoutPassword });
     } catch (error: unknown) {
       if (error instanceof UserServiceError) {
         return res.status(error.statusCode).json({ message: error.message });
