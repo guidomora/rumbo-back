@@ -1,4 +1,4 @@
-import { randomBytes, scrypt as scryptCallback } from 'crypto';
+import { randomBytes, scrypt as scryptCallback, timingSafeEqual } from 'crypto';
 import { promisify } from 'util';
 import { DataSource, Repository } from 'typeorm';
 import { AppDataSource } from '../database/data-source';
@@ -39,6 +39,23 @@ export class UserService {
     return `${salt}:${derivedKey.toString('hex')}`;
   }
 
+  private async verifyPassword(password: string, storedHash: string): Promise<boolean> {
+    const [salt, hash] = storedHash.split(':');
+
+    if (!salt || !hash) {
+      throw new Error('Formato de contraseña almacenada inválido.');
+    }
+
+    const derivedKey = (await scrypt(password, salt, 32)) as Buffer;
+    const storedKey = Buffer.from(hash, 'hex');
+
+    if (storedKey.length !== derivedKey.length) {
+      return false;
+    }
+
+    return timingSafeEqual(storedKey, derivedKey);
+  }
+
   async createUser(input: CreateUserInput): Promise<User> {
     const repository = this.repository;
 
@@ -66,5 +83,24 @@ export class UserService {
     });
 
     return repository.save(user);
+  }
+
+  async login(email: string, password: string): Promise<User> {
+    const repository = this.repository;
+    const normalizedEmail = email.toLowerCase();
+
+    const user = await repository.findOne({ where: { email: normalizedEmail } });
+
+    if (!user) {
+      throw new UserServiceError('Credenciales inválidas.', 401);
+    }
+
+    const isPasswordValid = await this.verifyPassword(password, user.password);
+
+    if (!isPasswordValid) {
+      throw new UserServiceError('Credenciales inválidas.', 401);
+    }
+
+    return user;
   }
 }
