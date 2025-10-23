@@ -6,5 +6,6 @@ const controller = new UserController();
 
 userRouter.post('/', controller.createUser);
 userRouter.post('/login', controller.loginUser);
+userRouter.post('/:id/ratings', controller.rateUser);
 
 export default userRouter;
