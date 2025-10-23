@@ -23,14 +23,16 @@ Esta guía describe los endpoints disponibles en el servidor Express. Todas las 
 - **Respuesta exitosa** (`201 Created`):
   ```json
   {
-    "message": "Usuario creado correctamente.",
-    "data": {
+    "user": {
       "id": "string",
       "name": "string",
       "email": "string",
       "phone": "string",
-      "password": "string",
-      "dni": "string"
+      "dni": "string",
+      "calificacionPromedio": 0,
+      "ratingsCount": 0,
+      "createdAt": "datetime",
+      "updatedAt": "datetime"
     }
   }
   ```
@@ -56,12 +58,55 @@ Esta guía describe los endpoints disponibles en el servidor Express. Todas las 
       "email": "string",
       "phone": "string",
       "dni": "string",
+      "calificacionPromedio": 4.5,
+      "ratingsCount": 3,
       "createdAt": "datetime",
       "updatedAt": "datetime"
     }
   }
   ```
 - **Errores comunes** (`401 Unauthorized`): Credenciales inválidas.
+
+### Calificar a un usuario
+- **Método**: `POST`
+- **Ruta**: `http://localhost:3000/api/users/:id/ratings`
+- **Tipo de cuerpo**: `application/json`
+- **Cuerpo requerido**:
+
+  | Campo      | Tipo     | Obligatorio | Descripción |
+  |------------|----------|-------------|-------------|
+  | `score`    | `number` | Sí          | Puntaje entre 1 y 5 (se admite decimal). |
+  | `comment`  | `string` | No          | Comentario opcional de la calificación. |
+  | `authorId` | `string` | No          | Identificador del usuario que emite la calificación. |
+
+- **Respuesta exitosa** (`201 Created`):
+  ```json
+  {
+    "rating": {
+      "id": "string",
+      "score": 5,
+      "comment": "Excelente experiencia",
+      "createdAt": "datetime",
+      "ratedUserId": "string",
+      "authorId": "string"
+    },
+    "user": {
+      "id": "string",
+      "name": "string",
+      "email": "string",
+      "phone": "string",
+      "dni": "string",
+      "calificacionPromedio": 4.8,
+      "ratingsCount": 5,
+      "createdAt": "datetime",
+      "updatedAt": "datetime"
+    }
+  }
+  ```
+
+- **Errores comunes**:
+  - `400 Bad Request`: Falta el puntaje o el formato es incorrecto.
+  - `404 Not Found`: El usuario calificado o el autor no existen.
 
 ## 🚗 Viajes (`/api/trips`)
 
