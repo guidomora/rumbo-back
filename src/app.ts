@@ -3,11 +3,17 @@ import dotenv from 'dotenv';
 import { initializeDataSource } from './database/data-source';
 import tripRouter from './routes/trip.routes';
 import userRouter from './routes/user.routes';
+import cors from 'cors';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+app.use(cors({
+  origin: 'http://localhost:3001',
+  credentials: true,
+}));
 
 app.use(express.json());
 
