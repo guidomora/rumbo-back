@@ -156,6 +156,46 @@ Esta guía describe los endpoints disponibles en el servidor Express. Todas las 
 
 - **Errores comunes** (`500 Internal Server Error`): Problemas al recuperar la información desde la base de datos.
 
+### Obtener el último viaje de un usuario
+- **Método**: `GET`
+- **Ruta**: `http://localhost:3000/api/trips/users/:userId/last`
+- **Parámetros de ruta**:
+
+  | Parámetro | Tipo     | Obligatorio | Descripción |
+  |-----------|----------|-------------|-------------|
+  | `userId`  | `string` | Sí          | Identificador del usuario (conductor o creador del viaje). |
+
+- **Respuesta exitosa** (`200 OK`):
+  ```json
+  {
+    "message": "Último viaje obtenido correctamente.",
+    "data": {
+      "id": "string",
+      "driverId": "string",
+      "createdByUserId": "string | null",
+      "origin": "string",
+      "destination": "string",
+      "date": "YYYY-MM-DD",
+      "time": "HH:mm:ss",
+      "availableSeats": "number",
+      "pricePerPerson": "string",
+      "vehicle": "string",
+      "music": "boolean",
+      "pets": "boolean",
+      "children": "boolean",
+      "luggage": "boolean",
+      "notes": "string | null",
+      "createdAt": "datetime",
+      "updatedAt": "datetime"
+    }
+  }
+  ```
+
+- **Errores comunes**:
+  - `400 Bad Request`: Falta el parámetro `userId`.
+  - `404 Not Found`: El usuario no tiene viajes registrados.
+  - `500 Internal Server Error`: Error inesperado al recuperar la información.
+
 ### Seleccionar viaje por id
 
 - **Método**: `GET`
