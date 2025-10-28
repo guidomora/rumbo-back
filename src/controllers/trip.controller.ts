@@ -38,7 +38,7 @@ const REQUIRED_FIELDS: Array<keyof TripRequestBody> = [
 ];
 
 export class TripController {
-  constructor(private readonly tripService = new TripService()) {}
+  constructor(private readonly tripService = new TripService()) { }
 
   createTrip = async (req: Request, res: Response): Promise<Response> => {
     const body = req.body as TripRequestBody;
@@ -189,6 +189,31 @@ export class TripController {
       return res.status(500).json({ message });
     }
   };
+
+  getLastTripByUser = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const { userId } = req.params;
+
+      if (!userId) {
+        return res.status(400).json({ message: 'Falta el parámetro userId' });
+      }
+
+      const trip = await this.tripService.getLastTripByUser(userId);
+
+      if (!trip) {
+        return res.status(404).json({ message: 'El usuario no tiene viajes registrados.' });
+      }
+
+      return res.status(200).json({
+        message: 'Último viaje obtenido correctamente.',
+        data: trip,
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Error inesperado al obtener el último viaje.';
+      return res.status(500).json({ message });
+    }
+  };
+
 }
 
 export const tripController = new TripController();

@@ -1,7 +1,7 @@
-import {DataSource, Repository} from 'typeorm';
-import {Trip} from '../models/trip.entity';
-import {AppDataSource} from '../database/data-source';
-import {TripSelection} from "../models/trip-selection.entity";
+import { DataSource, Repository } from 'typeorm';
+import { Trip } from '../models/trip.entity';
+import { AppDataSource } from '../database/data-source';
+import { TripSelection } from "../models/trip-selection.entity";
 
 export interface CreateTripInput {
   driverId: string;
@@ -21,7 +21,7 @@ export interface CreateTripInput {
 }
 
 export class TripService {
-  constructor(private readonly dataSource: DataSource = AppDataSource) {}
+  constructor(private readonly dataSource: DataSource = AppDataSource) { }
 
   private get repository(): Repository<Trip> {
     if (!this.dataSource.isInitialized) {
@@ -54,7 +54,7 @@ export class TripService {
     return repository.save(trip);
   }
 
-    async getPublishedTrips(): Promise<Trip[]> {
+  async getPublishedTrips(): Promise<Trip[]> {
     const repository = this.repository;
 
     return repository.find({
@@ -66,7 +66,7 @@ export class TripService {
   }
 
   async selectTrip({ tripId, userId, seats }: { tripId: string; userId: string; seats: number }) {
-    const trip = await this.repository.findOneBy({id: tripId});
+    const trip = await this.repository.findOneBy({ id: tripId });
     if (!trip) throw new Error('El viaje no existe.');
 
     if (trip.availableSeats < seats) {
@@ -87,7 +87,22 @@ export class TripService {
   }
 
   async getTripById(tripId: string) {
-    return await this.repository.findOneBy({id: tripId});
+    return await this.repository.findOneBy({ id: tripId });
   }
 
+  async getLastTripByUser(userId: string): Promise<Trip | null> {
+    const repository = this.repository;
+
+    return repository.findOne({
+      where: [
+        { driverId: userId },
+        { createdByUserId: userId },
+      ],
+      order: {
+        date: 'DESC',
+        time: 'DESC',
+        createdAt: 'DESC',
+      },
+    });
+  }
 }
