@@ -29,6 +29,7 @@ Esta guía describe los endpoints disponibles en el servidor Express. Todas las 
       "email": "string",
       "phone": "string",
       "dni": "string",
+      "password": "string",
       "calificacionPromedio": 0,
       "ratingsCount": 0,
       "createdAt": "datetime",
