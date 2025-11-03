@@ -176,4 +176,31 @@ export class UserController {
       return res.status(500).json({ message: 'Ocurrió un error inesperado.' });
     }
   };
+
+  getUserById = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const userId = parseString(req.params.id, 'id');
+
+      const { user, ratingsCount } = await this.userService.getUserById(userId);
+      const { password: _password, ...userWithoutPassword } = user;
+
+      return res.status(200).json({
+        user: {
+          ...userWithoutPassword,
+          calificacionPromedio: user.calificacionPromedio,
+          ratingsCount,
+        },
+      });
+    } catch (error: unknown) {
+      if (error instanceof UserServiceError) {
+        return res.status(error.statusCode).json({ message: error.message });
+      }
+
+      if (error instanceof Error) {
+        return res.status(400).json({ message: error.message });
+      }
+
+      return res.status(500).json({ message: 'Ocurrió un error inesperado.' });
+    }
+  };
 }
