@@ -68,6 +68,43 @@ Esta guía describe los endpoints disponibles en el servidor Express. Todas las 
   ```
 - **Errores comunes** (`401 Unauthorized`): Credenciales inválidas.
 
+### Crear una nueva contraseña
+- **Método**: `POST`
+- **Ruta**: `http://localhost:3000/api/users/:id/password`
+- **Parámetros de ruta**:
+
+  | Parámetro | Tipo     | Obligatorio | Descripción |
+  |-----------|----------|-------------|-------------|
+  | `id`      | `string` | Sí          | Identificador del usuario al que se le actualizará la contraseña. |
+
+- **Tipo de cuerpo**: `application/json`
+- **Cuerpo requerido**:
+
+  | Campo      | Tipo     | Obligatorio | Descripción |
+  |------------|----------|-------------|-------------|
+  | `password` | `string` | Sí          | Nueva contraseña del usuario (mínimo 8 caracteres). |
+
+- **Respuesta exitosa** (`200 OK`):
+  ```json
+  {
+    "message": "Contraseña actualizada correctamente.",
+    "user": {
+      "id": "string",
+      "name": "string",
+      "email": "string",
+      "phone": "string",
+      "dni": "string",
+      "calificacionPromedio": 4.5,
+      "ratingsCount": 3,
+      "createdAt": "datetime",
+      "updatedAt": "datetime"
+    }
+  }
+  ```
+- **Errores comunes**:
+  - `400 Bad Request`: Falta el campo `password` o no cumple con las validaciones.
+  - `404 Not Found`: El usuario indicado no existe.
+
 ### Obtener un usuario por ID
 - **Método**: `GET`
 - **Ruta**: `http://localhost:3000/api/users/:id`

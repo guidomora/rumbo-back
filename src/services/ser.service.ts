@@ -198,4 +198,20 @@ export class UserService {
       };
     });
   }
+
+  async updatePassword(userId: string, newPassword: string): Promise<User> {
+    const repository = this.repository;
+    const trimmedId = userId.trim();
+
+    const user = await repository.findOne({ where: { id: trimmedId } });
+
+    if (!user) {
+      throw new UserServiceError('El usuario no existe.', 404);
+    }
+
+    const passwordHash = await this.hashPassword(newPassword);
+    user.password = passwordHash;
+
+    return repository.save(user);
+  }
 }

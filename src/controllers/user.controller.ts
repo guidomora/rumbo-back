@@ -34,6 +34,12 @@ type RateUserRequestBody = {
 
 const RATE_REQUIRED_FIELDS: Array<keyof RateUserRequestBody> = ['score'];
 
+type UpdatePasswordRequestBody = {
+  password?: unknown;
+};
+
+const UPDATE_PASSWORD_REQUIRED_FIELDS: Array<keyof UpdatePasswordRequestBody> = ['password'];
+
 export class UserController {
   constructor(private readonly userService = new UserService()) {}
 
@@ -188,6 +194,41 @@ export class UserController {
         user: {
           ...userWithoutPassword,
           calificacionPromedio: user.calificacionPromedio,
+          ratingsCount,
+        },
+      });
+    } catch (error: unknown) {
+      if (error instanceof UserServiceError) {
+        return res.status(error.statusCode).json({ message: error.message });
+      }
+
+      if (error instanceof Error) {
+        return res.status(400).json({ message: error.message });
+      }
+
+      return res.status(500).json({ message: 'Ocurrió un error inesperado.' });
+    }
+  };
+
+  updatePassword = async (req: Request, res: Response): Promise<Response> => {
+    const body = req.body as UpdatePasswordRequestBody;
+    const { id } = req.params;
+
+    try {
+      ensureRequiredFields(body, UPDATE_PASSWORD_REQUIRED_FIELDS);
+
+      const userId = parseString(id, 'id');
+      const password = validatePassword(parseString(body.password, 'password'));
+
+      const updatedUser = await this.userService.updatePassword(userId, password);
+      const ratingsCount = await this.userService.getRatingsCount(updatedUser.id);
+      const { password: _password, ...userWithoutPassword } = updatedUser;
+
+      return res.status(200).json({
+        message: 'Contraseña actualizada correctamente.',
+        user: {
+          ...userWithoutPassword,
+          calificacionPromedio: updatedUser.calificacionPromedio,
           ratingsCount,
         },
       });
