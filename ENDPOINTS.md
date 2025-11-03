@@ -67,6 +67,35 @@ Esta guía describe los endpoints disponibles en el servidor Express. Todas las 
   ```
 - **Errores comunes** (`401 Unauthorized`): Credenciales inválidas.
 
+### Obtener un usuario por ID
+- **Método**: `GET`
+- **Ruta**: `http://localhost:3000/api/users/:id`
+- **Parámetros de ruta**:
+
+  | Parámetro | Tipo     | Obligatorio | Descripción |
+  |-----------|----------|-------------|-------------|
+  | `id`      | `string` | Sí          | Identificador único del usuario (UUID). |
+
+- **Respuesta exitosa** (`200 OK`):
+  ```json
+  {
+    "user": {
+      "id": "string",
+      "name": "string",
+      "email": "string",
+      "phone": "string",
+      "dni": "string",
+      "calificacionPromedio": 4.5,
+      "ratingsCount": 3,
+      "createdAt": "datetime",
+      "updatedAt": "datetime"
+    }
+  }
+  ```
+- **Errores comunes**:
+  - `400 Bad Request`: El parámetro `id` está ausente o es inválido.
+  - `404 Not Found`: No existe un usuario con el identificador indicado.
+
 ### Calificar a un usuario
 - **Método**: `POST`
 - **Ruta**: `http://localhost:3000/api/users/:id/ratings`

@@ -114,6 +114,21 @@ export class UserService {
     return user;
   }
 
+  async getUserById(id: string): Promise<{ user: User; ratingsCount: number }> {
+    const repository = this.repository;
+    const trimmedId = id.trim();
+
+    const user = await repository.findOne({ where: { id: trimmedId } });
+
+    if (!user) {
+      throw new UserServiceError('El usuario no existe.', 404);
+    }
+
+    const ratingsCount = await this.getRatingsCount(user.id);
+
+    return { user, ratingsCount };
+  }
+
   async getRatingsCount(userId: string): Promise<number> {
     const repository = this.ratingRepository;
     return repository.count({ where: { ratedUser: { id: userId } } });
