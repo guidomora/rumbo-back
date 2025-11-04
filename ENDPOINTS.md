@@ -4,6 +4,26 @@ Esta guía describe los endpoints disponibles en el servidor Express. Todas las 
 
 - **URL base**: `http://localhost:3000`
 
+## 📧 Correo (`/api/email`)
+
+### Enviar correo
+- **Método**: `POST`
+- **Ruta**: `http://localhost:3000/api/email`
+- **Tipo de cuerpo**: `application/json`
+- **Cuerpo requerido**:
+
+  | Campo      | Tipo     | Obligatorio | Descripción |
+  |------------|----------|-------------|-------------|
+  | `email`    | `string` | Sí          | Correo electrónico del usuario. |
+
+- **Respuesta exitosa** (`200 OK`):
+  ```json
+  {
+    "message": "Email sent successfully"
+  }
+  ```
+- **Errores comunes** (`500 Internal Server Error`): Error al enviar el correo.
+
 ## 📝 Usuarios (`/api/users`)
 
 ### Crear un usuario

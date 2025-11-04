@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import { initializeDataSource } from './database/data-source';
 import tripRouter from './routes/trip.routes';
 import userRouter from './routes/user.routes';
+import emailRouter from './routes/email.route';
 import cors from 'cors';
 
 dotenv.config();
@@ -23,6 +24,7 @@ app.get('/', (req: Request, res: Response) => {
 
 app.use('/api/trips', tripRouter);
 app.use('/api/users', userRouter);
+app.use('/api/email', emailRouter);
 
 const startServer = async () => {
   try {
