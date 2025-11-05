@@ -105,4 +105,44 @@ export class TripService {
       },
     });
   }
+
+  async getAllReservations(): Promise<
+      { idReserva: string; idPasajero: string; idConductor: string }[]
+  > {
+    const selections = await this.selectionRepository.find({
+      relations: ['trip'],
+    });
+
+    return selections.map((s) => ({
+      idReserva: s.id,
+      idPasajero: s.userId,
+      idConductor: s.trip.driverId,
+    }));
+  }
+
+  async getTripsByUser(userId: string): Promise<Trip[]> {
+    const repository = this.repository;
+    const selectionRepo = this.selectionRepository;
+
+    const createdTrips = await repository.find({
+      where: [
+        { driverId: userId }
+      ],
+      order: { date: 'DESC', time: 'DESC' },
+    });
+
+    const selections = await selectionRepo.find({
+      where: { userId },
+      relations: ['trip'],
+    });
+
+    const passengerTrips = selections.map((s) => s.trip);
+
+    const allTrips = [...createdTrips, ...passengerTrips];
+    const uniqueTrips = allTrips.filter(
+        (trip, index, self) => index === self.findIndex((t) => t.id === trip.id),
+    );
+
+    return uniqueTrips;
+  }
 }
