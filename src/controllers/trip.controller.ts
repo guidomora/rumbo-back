@@ -214,6 +214,31 @@ export class TripController {
     }
   };
 
+  getAllReservations = async (req: Request, res: Response)=> {
+    try {
+      const reservations = await this.tripService.getAllReservations();
+      res.json(reservations);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  };
+
+  getTripsByUser = async (req: Request, res: Response)=> {
+    try {
+      const { userId } = req.params;
+
+      if (!userId) {
+        return res.status(400).json({ message: 'El parámetro userId es requerido.' });
+      }
+
+      const trips = await this.tripService.getTripsByUser(userId);
+      return res.json(trips);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Error al obtener el historial de viajes.' });
+    }
+  };
+
 }
 
 export const tripController = new TripController();

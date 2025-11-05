@@ -353,6 +353,74 @@ Esta guía describe los endpoints disponibles en el servidor Express. Todas las 
 }
 ```
 
+## 🚗 Viajes de un usuario (/api/trips/users/:userId)
+- Obtener todos los viajes de un usuario
+- **Método**: GET
+- **Ruta**: http://localhost:3000/api/trips/users/:userId
+- **Parámetros**:
+- | Parámetro | Tipo     | Obligatorio | Descripción                                                 |
+  | --------- | -------- | ----------- | ----------------------------------------------------------- |
+  | `userId`  | `string` | Sí          | Identificador del usuario (puede ser conductor o pasajero). |
+- Descripción:  
+Este endpoint devuelve todos los viajes asociados a un usuario, tanto los que reservo como conductor, como aquellos en los que fue pasajero.
+
+- **Respuesta exitosa (200 OK)**:
+```json
+{
+  "message": "Viajes asociados al usuario obtenidos correctamente.",
+  "data": [
+    {
+      "id": "string",
+      "driverId": "string",
+      "createdByUserId": "string | null",
+      "origin": "string",
+      "destination": "string",
+      "date": "YYYY-MM-DD",
+      "time": "HH:mm:ss",
+      "availableSeats": "number",
+      "pricePerPerson": "number",
+      "vehicle": "string",
+      "music": "boolean",
+      "pets": "boolean",
+      "children": "boolean",
+      "luggage": "boolean",
+      "notes": "string | null",
+      "createdAt": "datetime",
+      "updatedAt": "datetime"
+    }
+  ]
+}
+```
+
+- **Errores comunes**:
+  - `400 Bad Request`: Falta el parámetro `userId`.
+  - `404 Not Found`: No se encontraron viajes asociados al usuario. 
+  - `500 Internal Server Error`: Error inesperado en el servidor.
+
+## 🧾 Reservas (/api/trips/reservations)
+- Listar todas las reservas 
+- **Método**: GET 
+- **Ruta**: http://localhost:3000/api/trips/reservations
+- Descripción:  
+Devuelve una lista de todas las reservas realizadas, indicando el identificador de la reserva, del pasajero y del conductor del viaje asociado.
+
+- **Respuesta exitosa (200 OK)**:
+```json
+{
+  "message": "Reservas obtenidas correctamente.",
+  "data": [
+    {
+      "idReserva": "string",
+      "idPasajero": "string",
+      "idConductor": "string"
+    }
+  ]
+}
+```
+
+- **Errores comunes**:
+  - **500 Internal Server Error**: Error al obtener las reservas desde la base de datos.
+
 ## 🏠 Salud del servidor (`/`)
 
 ### Verificar estado del servidor
