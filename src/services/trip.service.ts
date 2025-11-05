@@ -126,8 +126,7 @@ export class TripService {
 
     const createdTrips = await repository.find({
       where: [
-        { driverId: userId },
-        { createdByUserId: userId },
+        { driverId: userId }
       ],
       order: { date: 'DESC', time: 'DESC' },
     });
