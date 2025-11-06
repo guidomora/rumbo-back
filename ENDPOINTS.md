@@ -90,12 +90,12 @@ Esta guía describe los endpoints disponibles en el servidor Express. Todas las 
 
 ### Crear una nueva contraseña
 - **Método**: `POST`
-- **Ruta**: `http://localhost:3000/api/users/:id/password`
+- **Ruta**: `http://localhost:3000/api/users/:email/password`
 - **Parámetros de ruta**:
 
   | Parámetro | Tipo     | Obligatorio | Descripción |
   |-----------|----------|-------------|-------------|
-  | `id`      | `string` | Sí          | Identificador del usuario al que se le actualizará la contraseña. |
+  | `email`   | `string` | Sí          | Correo electrónico del usuario al que se le actualizará la contraseña. |
 
 - **Tipo de cuerpo**: `application/json`
 - **Cuerpo requerido**:

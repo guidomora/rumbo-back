@@ -199,11 +199,11 @@ export class UserService {
     });
   }
 
-  async updatePassword(userId: string, newPassword: string): Promise<User> {
+  async updatePassword(email: string, newPassword: string): Promise<User> {
     const repository = this.repository;
-    const trimmedId = userId.trim();
+    const normalizedEmail = email.trim().toLowerCase();
 
-    const user = await repository.findOne({ where: { id: trimmedId } });
+    const user = await repository.findOne({ where: { email: normalizedEmail } });
 
     if (!user) {
       throw new UserServiceError('El usuario no existe.', 404);

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { UserService, UserServiceError } from '../services/ser.service';
+import { UserService, UserServiceError } from '../services/user.service';
 import {
   ensureRequiredFields,
   parseNumber,
@@ -212,15 +212,15 @@ export class UserController {
 
   updatePassword = async (req: Request, res: Response): Promise<Response> => {
     const body = req.body as UpdatePasswordRequestBody;
-    const { id } = req.params;
+    const { email } = req.params;
 
     try {
       ensureRequiredFields(body, UPDATE_PASSWORD_REQUIRED_FIELDS);
 
-      const userId = parseString(id, 'id');
+      const userEmail = parseString(email, 'email');
       const password = validatePassword(parseString(body.password, 'password'));
 
-      const updatedUser = await this.userService.updatePassword(userId, password);
+      const updatedUser = await this.userService.updatePassword(userEmail, password);
       const ratingsCount = await this.userService.getRatingsCount(updatedUser.id);
       const { password: _password, ...userWithoutPassword } = updatedUser;
 
