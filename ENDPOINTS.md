@@ -353,6 +353,29 @@ Esta guía describe los endpoints disponibles en el servidor Express. Todas las 
 }
 ```
 
+### Cancelar un viaje
+
+- **Método**: `DELETE`
+- **Ruta**: `http://localhost:3000/api/trips/:id`
+- **Parámetros**:
+
+  | Parámetro | Tipo     | Obligatorio | Descripción                               |
+  |-----------|----------|-------------|-------------------------------------------|
+  | `id`      | `string` | Sí          | Identificador único del viaje a cancelar. |
+
+- **Respuesta exitosa** (`200 OK`):
+
+```json
+{
+  "message": "Viaje cancelado correctamente."
+}
+```
+
+- **Errores comunes**:
+  - `400 Bad Request`: Falta el parámetro `id`.
+  - `404 Not Found`: El viaje indicado no existe.
+  - `500 Internal Server Error`: Error inesperado al cancelar el viaje.
+
 ## 🚗 Viajes de un usuario (/api/trips/users/:userId)
 - Obtener todos los viajes de un usuario
 - **Método**: GET

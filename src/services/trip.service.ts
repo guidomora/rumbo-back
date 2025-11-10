@@ -90,6 +90,16 @@ export class TripService {
     return await this.repository.findOneBy({ id: tripId });
   }
 
+  async cancelTrip(tripId: string): Promise<void> {
+    const repository = this.repository;
+
+    const result = await repository.delete(tripId);
+
+    if (result.affected === 0) {
+      throw new Error('El viaje no existe.');
+    }
+  }
+
   async getLastTripByUser(userId: string): Promise<Trip | null> {
     const repository = this.repository;
 
