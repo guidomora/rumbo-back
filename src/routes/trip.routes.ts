@@ -8,6 +8,7 @@ router.get('/reservations', tripController.getAllReservations);
 router.post('/', tripController.createTrip);
 router.get('/', tripController.getPublishedTrips);
 
+router.delete('/:tripId', tripController.cancelTrip);
 router.get('/:tripId', tripController.getTripById);
 router.post('/:tripId/select', tripController.selectTrip);
 router.get('/users/:userId/last', tripController.getLastTripByUser);

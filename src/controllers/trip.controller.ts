@@ -179,13 +179,35 @@ export class TripController {
 
       const trip = await this.tripService.getTripById(tripId);
 
-      if (!tripId) {
+      if (!trip) {
         return res.status(404).json({ message: 'Viaje no encontrado' });
       }
 
       return res.status(200).json(trip);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Error inesperado al obtener el viaje.';
+      return res.status(500).json({ message });
+    }
+  };
+
+  cancelTrip = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const { tripId } = req.params;
+
+      if (!tripId) {
+        return res.status(400).json({ message: 'Falta el parámetro tripId' });
+      }
+
+      await this.tripService.cancelTrip(tripId);
+
+      return res.status(200).json({ message: 'Viaje cancelado correctamente.' });
+    } catch (error) {
+      if (error instanceof Error && error.message === 'El viaje no existe.') {
+        return res.status(404).json({ message: error.message });
+      }
+
+      const message = error instanceof Error ? error.message : 'Error inesperado al cancelar el viaje.';
+
       return res.status(500).json({ message });
     }
   };
