@@ -1,5 +1,5 @@
 import { DataSource, Repository } from 'typeorm';
-import { Trip } from '../models/trip.entity';
+import { Trip, TripState } from '../models/trip.entity';
 import { AppDataSource } from '../database/data-source';
 import { TripSelection } from "../models/trip-selection.entity";
 
@@ -18,6 +18,7 @@ export interface CreateTripInput {
   luggage?: boolean;
   notes?: string | null;
   createdByUserId?: string | null;
+  state?: TripState;
 }
 
 export class TripService {
@@ -49,6 +50,7 @@ export class TripService {
       luggage: input.luggage ?? false,
       notes: input.notes ?? null,
       createdByUserId: input.createdByUserId ?? null,
+      state: input.state ?? 'pending',
     });
 
     return repository.save(trip);
@@ -154,5 +156,31 @@ export class TripService {
     );
 
     return uniqueTrips;
+  }
+
+  async updateTripState(tripId: string, newState: TripState): Promise<Trip> {
+    const repository = this.repository;
+
+    const trip = await repository.findOneBy({ id: tripId });
+
+    if (!trip) {
+      throw new Error('El viaje no existe.');
+    }
+
+    const allowedTransitions: Record<TripState, TripState[]> = {
+      pending: ['in_progress'],
+      in_progress: ['completed'],
+      completed: [],
+    };
+
+    const isTransitionAllowed = allowedTransitions[trip.state]?.includes(newState);
+
+    if (!isTransitionAllowed) {
+      throw new Error('Transición de estado no válida para el viaje.');
+    }
+
+    trip.state = newState;
+
+    return repository.save(trip);
   }
 }

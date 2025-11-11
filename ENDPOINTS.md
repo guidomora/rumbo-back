@@ -224,7 +224,7 @@ Esta guía describe los endpoints disponibles en el servidor Express. Todas las 
   ```json
   {
     "message": "Viaje creado correctamente.",
-    "data": { /* Objeto del viaje creado */ }
+    "data": { /* Objeto del viaje creado, incluyendo el estado inicial "pending" */ }
   }
   ```
 - **Errores comunes** (`400 Bad Request`): Campos faltantes o formatos inválidos en la solicitud.
@@ -271,6 +271,7 @@ Esta guía describe los endpoints disponibles en el servidor Express. Todas las 
       "pets": "boolean",
       "children": "boolean",
       "luggage": "boolean",
+      "state": "string",
       "notes": "string | null",
       "createdAt": "datetime",
       "updatedAt": "datetime"
@@ -306,6 +307,7 @@ Esta guía describe los endpoints disponibles en el servidor Express. Todas las 
   "pets": false,
   "children": true,
   "luggage": true,
+  "state": "pending",
   "notes": "Salida puntual, se permite un bolso pequeño por persona.",
   "createdAt": "2025-10-08T01:26:59.174Z",
   "updatedAt": "2025-10-08T01:41:01.636Z"
@@ -341,11 +343,12 @@ Esta guía describe los endpoints disponibles en el servidor Express. Todas las 
     "time": "08:30:00",
     "availableSeats": 5,
     "pricePerPerson": "12000.00",
-    "vehicle": "Toyota Corolla 2020",
-    "music": true,
-    "pets": false,
-    "children": true,
+  "vehicle": "Toyota Corolla 2020",
+  "music": true,
+  "pets": false,
+  "children": true,
     "luggage": true,
+    "state": "pending",
     "notes": "Salida puntual, se permite un bolso pequeño por persona.",
     "createdAt": "2025-10-08T01:26:59.174Z",
     "updatedAt": "2025-10-08T02:28:43.205Z"
@@ -375,6 +378,62 @@ Esta guía describe los endpoints disponibles en el servidor Express. Todas las 
   - `400 Bad Request`: Falta el parámetro `id`.
   - `404 Not Found`: El viaje indicado no existe.
   - `500 Internal Server Error`: Error inesperado al cancelar el viaje.
+
+### Marcar un viaje como "en curso"
+
+- **Método**: `PATCH`
+- **Ruta**: `http://localhost:3000/api/trips/:id/start`
+- **Parámetros**:
+
+  | Parámetro | Tipo     | Obligatorio | Descripción                                        |
+  |-----------|----------|-------------|----------------------------------------------------|
+  | `id`      | `string` | Sí          | Identificador único del viaje a actualizar.        |
+
+- **Respuesta exitosa** (`200 OK`):
+
+```json
+{
+  "message": "Viaje marcado como en curso correctamente.",
+  "data": {
+    "id": "string",
+    "state": "in_progress",
+    /* resto de los campos del viaje */
+  }
+}
+```
+
+- **Errores comunes**:
+  - `400 Bad Request`: La transición de estado no es válida para el viaje.
+  - `404 Not Found`: El viaje indicado no existe.
+  - `500 Internal Server Error`: Error inesperado al actualizar el estado del viaje.
+
+### Marcar un viaje como "finalizado"
+
+- **Método**: `PATCH`
+- **Ruta**: `http://localhost:3000/api/trips/:id/complete`
+- **Parámetros**:
+
+  | Parámetro | Tipo     | Obligatorio | Descripción                                        |
+  |-----------|----------|-------------|----------------------------------------------------|
+  | `id`      | `string` | Sí          | Identificador único del viaje a actualizar.        |
+
+- **Respuesta exitosa** (`200 OK`):
+
+```json
+{
+  "message": "Viaje marcado como finalizado correctamente.",
+  "data": {
+    "id": "string",
+    "state": "completed",
+    /* resto de los campos del viaje */
+  }
+}
+```
+
+- **Errores comunes**:
+  - `400 Bad Request`: La transición de estado no es válida para el viaje.
+  - `404 Not Found`: El viaje indicado no existe.
+  - `500 Internal Server Error`: Error inesperado al actualizar el estado del viaje.
 
 ## 🚗 Viajes de un usuario (/api/trips/users/:userId)
 - Obtener todos los viajes de un usuario
@@ -407,6 +466,7 @@ Este endpoint devuelve todos los viajes asociados a un usuario, tanto los que re
       "pets": "boolean",
       "children": "boolean",
       "luggage": "boolean",
+      "state": "string",
       "notes": "string | null",
       "createdAt": "datetime",
       "updatedAt": "datetime"
