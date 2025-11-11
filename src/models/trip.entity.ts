@@ -6,6 +6,8 @@ import {
     Entity,
   } from 'typeorm';
   
+  export type TripState = 'pending' | 'in_progress' | 'completed';
+
   @Entity({ name: 'trips' })
   export class Trip {
     @PrimaryGeneratedColumn('uuid')
@@ -52,6 +54,9 @@ import {
   
     @Column({ type: 'text', nullable: true })
     notes?: string | null;
+
+    @Column({ type: 'varchar', length: 50, default: 'pending' })
+    state!: TripState;
   
     @CreateDateColumn({ type: 'timestamptz' })
     createdAt!: Date;

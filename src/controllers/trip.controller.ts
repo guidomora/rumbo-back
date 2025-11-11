@@ -212,6 +212,64 @@ export class TripController {
     }
   };
 
+  startTrip = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const { tripId } = req.params;
+
+      if (!tripId) {
+        return res.status(400).json({ message: 'Falta el parámetro tripId' });
+      }
+
+      const trip = await this.tripService.updateTripState(tripId, 'in_progress');
+
+      return res.status(200).json({
+        message: 'Viaje marcado como en curso correctamente.',
+        data: trip,
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.message === 'El viaje no existe.') {
+          return res.status(404).json({ message: error.message });
+        }
+
+        if (error.message === 'Transición de estado no válida para el viaje.') {
+          return res.status(400).json({ message: error.message });
+        }
+      }
+
+      return res.status(500).json({ message: 'Error inesperado al actualizar el estado del viaje.' });
+    }
+  };
+
+  completeTrip = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const { tripId } = req.params;
+
+      if (!tripId) {
+        return res.status(400).json({ message: 'Falta el parámetro tripId' });
+      }
+
+      const trip = await this.tripService.updateTripState(tripId, 'completed');
+
+      return res.status(200).json({
+        message: 'Viaje marcado como finalizado correctamente.',
+        data: trip,
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.message === 'El viaje no existe.') {
+          return res.status(404).json({ message: error.message });
+        }
+
+        if (error.message === 'Transición de estado no válida para el viaje.') {
+          return res.status(400).json({ message: error.message });
+        }
+      }
+
+      return res.status(500).json({ message: 'Error inesperado al actualizar el estado del viaje.' });
+    }
+  };
+
   getLastTripByUser = async (req: Request, res: Response): Promise<Response> => {
     try {
       const { userId } = req.params;
