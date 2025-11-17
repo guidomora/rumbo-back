@@ -1,7 +1,8 @@
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 import { Trip, TripState } from '../models/trip.entity';
 import { AppDataSource } from '../database/data-source';
 import { TripSelection } from "../models/trip-selection.entity";
+import { User } from '../models/user.entity';
 
 export interface CreateTripInput {
   driverId: string;
@@ -37,6 +38,14 @@ export class TripService {
       throw new Error('Data source has not been initialized.');
     }
     return this.dataSource.getRepository(TripSelection);
+  }
+
+  private get userRepository(): Repository<User> {
+    if (!this.dataSource.isInitialized) {
+      throw new Error('Data source has not been initialized.');
+    }
+
+    return this.dataSource.getRepository(User);
   }
 
   async createTrip(input: CreateTripInput): Promise<Trip> {
@@ -182,5 +191,49 @@ export class TripService {
     trip.state = newState;
 
     return repository.save(trip);
+  }
+
+  async getPassengersByTrip(
+    tripId: string,
+  ): Promise<Array<{ id: string; name: string; email: string; phone: string; dni: string; seats: number }>> {
+    const repository = this.repository;
+    const selectionRepository = this.selectionRepository;
+    const userRepository = this.userRepository;
+
+    const trip = await repository.findOne({ where: { id: tripId } });
+
+    if (!trip) {
+      throw new Error('El viaje no existe.');
+    }
+
+    const selections = await selectionRepository.find({ where: { tripId } });
+
+    if (selections.length === 0) {
+      return [];
+    }
+
+    const userIds = selections.map((selection) => selection.userId);
+    const users = await userRepository.find({ where: { id: In(userIds) } });
+    const usersById = new Map(users.map((user) => [user.id, user]));
+
+    return selections
+      .map((selection) => {
+        const user = usersById.get(selection.userId);
+        if (!user) {
+          return null;
+        }
+
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          phone: user.phone,
+          dni: user.dni,
+          seats: selection.seats,
+        };
+      })
+      .filter((passenger): passenger is { id: string; name: string; email: string; phone: string; dni: string; seats: number } =>
+        passenger !== null,
+      );
   }
 }
