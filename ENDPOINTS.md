@@ -435,6 +435,41 @@ Esta guía describe los endpoints disponibles en el servidor Express. Todas las 
   - `404 Not Found`: El viaje indicado no existe.
   - `500 Internal Server Error`: Error inesperado al actualizar el estado del viaje.
 
+### Obtener los pasajeros de un viaje
+
+- **Método**: `GET`
+- **Ruta**: `http://localhost:3000/api/trips/:tripId/passengers`
+- **Parámetros**:
+
+  | Parámetro | Tipo     | Obligatorio | Descripción                              |
+  |-----------|----------|-------------|------------------------------------------|
+  | `tripId`  | `string` | Sí          | Identificador del viaje a consultar.     |
+
+- **Descripción**: Devuelve la lista de pasajeros que reservaron un viaje, junto con la cantidad de asientos que posee cada reserva.
+
+- **Respuesta exitosa** (`200 OK`):
+
+  ```json
+  {
+    "message": "Pasajeros obtenidos correctamente.",
+    "data": [
+      {
+        "id": "string",
+        "name": "string",
+        "email": "string",
+        "phone": "string",
+        "dni": "string",
+        "seats": 2
+      }
+    ]
+  }
+  ```
+
+- **Errores comunes**:
+  - `400 Bad Request`: Falta el parámetro `tripId`.
+  - `404 Not Found`: El viaje indicado no existe.
+  - `500 Internal Server Error`: Error inesperado al obtener los pasajeros del viaje.
+
 ## 🚗 Viajes de un usuario (/api/trips/users/:userId)
 - Obtener todos los viajes de un usuario
 - **Método**: GET
