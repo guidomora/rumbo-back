@@ -14,17 +14,29 @@ const {
   DB_NAME = 'rumbo',
   DB_LOGGING = 'false',
   DB_SYNCHRONIZE = 'false',
+  DATABASE_URL,
+  NODE_ENV,
 } = process.env;
 
-console.log('DB_USER>>', DB_USERNAME);
+
+const isProd = NODE_ENV === 'production';
+
+// console.log('DB_USER>>', DB_USERNAME);
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
-  host: DB_HOST,
-  port: Number(DB_PORT),
-  username: DB_USERNAME,
-  password: DB_PASSWORD,
-  database: DB_NAME,
+  ...(DATABASE_URL
+    ? {
+        url: DATABASE_URL,
+        ssl: isProd ? { rejectUnauthorized: false } : false,
+      }
+    : {
+        host: DB_HOST,
+        port: Number(DB_PORT),
+        username: DB_USERNAME,
+        password: DB_PASSWORD,
+        database: DB_NAME,
+      }),
   synchronize: DB_SYNCHRONIZE === 'true',
   logging: DB_LOGGING === 'true',
   entities: [Trip, TripSelection, User, Rating],
