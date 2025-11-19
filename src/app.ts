@@ -12,7 +12,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors({
-  origin: 'http://localhost:3001',
+  origin: ['http://localhost:3001', 'https://v0-remix-of-rumbo-app-design.vercel.app'],
   credentials: true,
 }));
 
